@@ -1,26 +1,33 @@
-<!DOCTYPE html>
-<html lang="es">
+<!DOCTYPE html> <!-- Declaración del tipo de documento HTML5 -->
+<html lang="es"> <!-- Establece el idioma del documento para accesibilidad y SEO -->
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ClimApp - Sistema de Información Climática</title>
-    
-    <!-- OpenWeatherMap y Leaflet CSS -->
+    <meta charset="UTF-8"> <!-- Codificación de caracteres -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Responsive para dispositivos móviles -->
+    <title>ClimApp - Sistema de Información Climática</title> <!-- Título de la pestaña del navegador -->
+
+    <!-- OpenWeatherMap y Leaflet CSS --> <!-- Carga de estilos de Leaflet (para mapas) y CSS propio -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
     <link rel="stylesheet" href="index.css">
+    <!-- Se carga el JavaScript con defer para asegurar que el DOM esté listo antes de ejecutarse -->
+    <script src="script.js" defer></script>
 </head>
+
 <body>
     <div class="app">
-        <!-- Header con navegación -->
+        <!-- Header con navegación --><!-- Contenedor principal de la aplicación -->
         <header class="header">
             <div class="app__container header__container">
                 <div class="header__logo">
                     <span class="header__logo-icon icon-logo"></span>
                     ClimApp
                 </div>
+                <!-- Navegación principal -->
                 <nav class="header__nav nav">
                     <ul class="nav__list">
-                        <li class="nav__item"><a href="#" class="nav__link nav__link--active" id="homeLink">Inicio</a></li>
+                        <!-- Enlaces con IDs para ser manejados por JavaScript (dinamismo) -->
+                        <li class="nav__item"><a href="#" class="nav__link nav__link--active" id="homeLink">Inicio</a>
+                        </li>
                         <li class="nav__item"><a href="#" class="nav__link" id="mapLink">Mapa</a></li>
                         <li class="nav__item"><a href="#" class="nav__link">Historial</a></li>
                         <li class="nav__item"><a href="#" class="nav__link">Alertas</a></li>
@@ -31,6 +38,7 @@
         </header>
 
         <!-- Contenido principal -->
+        <!-- ================== MAIN ================== -->
         <main class="main">
             <div class="app__container">
                 <!-- Estados de carga/error (inicialmente ocultos) -->
@@ -38,11 +46,12 @@
                     <div class="loading__spinner"></div>
                     <div class="loading__text">Cargando datos del clima...</div>
                 </div>
-
+                <!-- Mensaje de error al cargar datos del API -->
                 <div class="error hidden" id="errorState">
                     <div class="error__icon icon-error"></div>
                     <h2 class="error__title">Error al cargar los datos</h2>
-                    <p class="error__message">No pudimos obtener la información del clima. Por favor, verifica tu conexión e inténtalo nuevamente.</p>
+                    <p class="error__message">No pudimos obtener la información del clima. Por favor, verifica tu
+                        conexión e inténtalo nuevamente.</p>
                     <button class="error__button" id="retryButton">Intentar nuevamente</button>
                 </div>
 
@@ -55,39 +64,40 @@
                             <div class="weather-card__header">
                                 <div>
                                     <h2 class="weather-card__title" id="locationName">Buenos Aires, Argentina</h2>
-                                    <div class="weather-card__subtitle" id="weatherDescription">Parcialmente nublado</div>
+                                    <div class="weather-card__subtitle" id="weatherDescription">Parcialmente nublado
+                                    </div>
                                 </div>
                                 <div class="weather-card__update">
-                                    <div id="lastUpdate">Actualizado: 10:30 AM</div>
-                                    <button class="weather-card__refresh" id="refreshButton">
+                                    <div id="lastUpdate">Actualizado: --:--</div>
+                                    <button class="weather-card__refresh" id="refreshButton" onclick="fetchWeather()">
                                         <span class="weather-card__refresh-icon icon-refresh"></span>
                                         Actualizar
                                     </button>
                                 </div>
                             </div>
                             <div class="weather-card__main">
-                                <div class="weather-card__temp" id="currentTemp">25°C</div>
+                                <div class="weather-card__temp" id="currentTemp">--°C</div>
                                 <div class="weather-card__icon icon-cloudy" id="weatherIcon"></div>
                             </div>
                             <div class="weather-card__details">
                                 <div class="weather-detail">
                                     <div class="weather-detail__icon icon-temp"></div>
-                                    <div class="weather-detail__value" id="feelsLike">27°C</div>
+                                    <div class="weather-detail__value" id="feelsLike">--°C</div>
                                     <div class="weather-detail__label">Sensación térmica</div>
                                 </div>
                                 <div class="weather-detail">
                                     <div class="weather-detail__icon icon-humidity"></div>
-                                    <div class="weather-detail__value" id="humidity">65%</div>
+                                    <div class="weather-detail__value" id="humidity">--%</div>
                                     <div class="weather-detail__label">Humedad</div>
                                 </div>
                                 <div class="weather-detail">
                                     <div class="weather-detail__icon icon-wind"></div>
-                                    <div class="weather-detail__value" id="windSpeed">12 km/h</div>
+                                    <div class="weather-detail__value" id="windSpeed">-- km/h</div>
                                     <div class="weather-detail__label">Viento</div>
                                 </div>
                                 <div class="weather-detail">
                                     <div class="weather-detail__icon icon-pressure"></div>
-                                    <div class="weather-detail__value" id="pressure">1015 hPa</div>
+                                    <div class="weather-detail__value" id="pressure">-- hPa</div>
                                     <div class="weather-detail__label">Presión</div>
                                 </div>
                             </div>
@@ -154,7 +164,8 @@
                                     <div class="alert-card__icon icon-warning"></div>
                                     <div class="alert-card__content">
                                         <h3 class="alert-card__title">Alerta por lluvias intensas</h3>
-                                        <p class="alert-card__message">Se esperan precipitaciones de entre 30 y 50 mm en las próximas 24 horas. Posible acumulación de agua en calles y avenidas.</p>
+                                        <p class="alert-card__message">Se esperan precipitaciones de entre 30 y 50 mm en
+                                            las próximas 24 horas. Posible acumulación de agua en calles y avenidas.</p>
                                         <div class="alert-card__footer">
                                             <span>Emitida por Servicio Meteorológico Nacional</span>
                                             <span class="alert-card__time">2 horas atrás</span>
@@ -171,7 +182,8 @@
                         <div class="location">
                             <h2 class="location__title">Buscar ubicación</h2>
                             <div class="location__form">
-                                <input type="text" class="location__input" id="locationInput" placeholder="Nombre de ciudad...">
+                                <input type="text" class="location__input" id="locationInput"
+                                    placeholder="Nombre de ciudad...">
                                 <button class="location__button" id="searchButton">
                                     <span class="icon-search"></span>
                                 </button>
@@ -217,7 +229,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Sección del mapa del clima -->
                 <section class="map-section" id="mapSection">
                     <h2 class="forecast__title">Mapa meteorológico en tiempo real</h2>
@@ -273,37 +285,74 @@
                 </section>
 
 
-                </div>
-            </main>
+            </div>
+        </main>
 
-            <!-- Footer -->
-            <footer class="footer">
-                <div class="app__container footer__container">
-                    <div class="footer__section">
-                        <h3 class="footer__title">Acerca de</h3>
-                        <p>ClimApp es una aplicación para consultar información climática en tiempo real.</p>
-                    </div>
-                    <div class="footer__section">
-                        <h3 class="footer__title">Enlaces útiles</h3>
-                        <ul class="footer__list">
-                            <li class="footer__item"><a href="#" class="footer__link">Política de privacidad</a></li>
-                            <li class="footer__item"><a href="#" class="footer__link">Términos de uso</a></li>
-                            <li class="footer__item"><a href="#" class="footer__link">Contacto</a></li>
-                        </ul>
-                    </div>
-                    <div class="footer__section">
-                        <h3 class="footer__title">Síguenos</h3>
-                        <ul class="footer__list">
-                            <li class="footer__item"><a href="#" class="footer__link">Facebook</a></li>
-                            <li class="footer__item"><a href="#" class="footer__link">Twitter</a></li>
-                            <li class="footer__item"><a href="#" class="footer__link">Instagram</a></li>
-                        </ul>
-                    </div>
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="app__container footer__container">
+                <div class="footer__section">
+                    <h3 class="footer__title">Acerca de</h3>
+                    <p>ClimApp es una aplicación para consultar información climática en tiempo real.</p>
                 </div>
-                <div class="footer__copyright">
-                    &copy; 2023 ClimApp. Todos los derechos reservados.
+                <div class="footer__section">
+                    <h3 class="footer__title">Enlaces útiles</h3>
+                    <ul class="footer__list">
+                        <li class="footer__item"><a href="#" class="footer__link">Política de privacidad</a></li>
+                        <li class="footer__item"><a href="#" class="footer__link">Términos de uso</a></li>
+                        <li class="footer__item"><a href="#" class="footer__link">Contacto</a></li>
+                    </ul>
                 </div>
-            </footer>
-        </div>
-    </body>
-    </html>
+                <div class="footer__section">
+                    <h3 class="footer__title">Síguenos</h3>
+                    <ul class="footer__list">
+                        <li class="footer__item"><a href="#" class="footer__link">Facebook</a></li>
+                        <li class="footer__item"><a href="#" class="footer__link">Twitter</a></li>
+                        <li class="footer__item"><a href="#" class="footer__link">Instagram</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer__copyright">
+                &copy; 2023 ClimApp. Todos los derechos reservados.
+            </div>
+        </footer>
+    </div>
+
+</body>
+
+</html>
+
+
+<!-- 
+===============================
+🌟 BUENAS PRÁCTICAS IDENTIFICADAS
+===============================
+
+✅ Uso de defer en <script> para optimizar la carga.
+✅ Separación entre HTML, CSS y JS.
+✅ Componentización visual: secciones bien divididas (dashboard, forecast, alerts, etc).
+✅ Identificadores únicos (id) para actualizar datos dinámicamente con JS.
+✅ Clases semánticas y nomenclatura BEM.
+✅ Textos accesibles y estructura HTML jerárquica.
+
+===============================
+🛠️ SUGERENCIAS PARA MEJORAS FUTURAS
+===============================
+
+🔄 Cargar contenido dinámico en secciones como:
+   - forecastContainer
+   - alertsContainer
+   - historicalChart
+   Estas deberían generarse completamente desde JavaScript para separar lógica de presentación y datos.
+
+♿ Agregar atributos aria para mejorar la accesibilidad.
+
+🧩 Validar campos de entrada como el buscador con atributos como required o pattern.
+
+🌐 Internacionalización (i18n): considerar estructuras que permitan traducir fácilmente la app.
+
+🧼 Evitar onclick en HTML y mover toda la lógica al archivo JS con addEventListener.
+
+🧱 Separar plantillas HTML para reutilizar secciones como tarjetas del clima y alertas.
+
+-->
